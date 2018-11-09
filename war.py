@@ -95,13 +95,3 @@ def play(shuffle_won_cards=True, verbose=False, max_hands=10000, plot_progress=F
         plt.show()
 
     return hand_num
-
-num_rounds = 1000
-counts = []
-for i in range(0, num_rounds):
-    if i % 100 == 0:
-        print 'done with', i, 'rounds'
-    counts.append(play())
-
-plt.hist(counts, bins='auto', normed=True)
-plt.show()
