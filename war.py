@@ -2,21 +2,23 @@ from random import shuffle
 import matplotlib.pyplot as plt
 
 
-def play():
+def play(shuffle_won_cards=True, verbose=False, max_hands=10000, plot_progress=False):
     deck = range(2, 15)*4
     shuffle(deck)
 
-    # print 'starting deck:'
-    # print deck
-    # print
+    if verbose:
+        print 'starting deck:'
+        print deck
+        print
 
     player1 = deck[::2]
     player2 = deck[1::2]
 
-    # print 'player 1 staring deck:', player1
-    # print 'player 2 staring deck:', player2
+    if verbose:
+        print 'player 1 staring deck:', player1
+        print 'player 2 staring deck:', player2
 
-    round_num = 0
+    hand_num = 0
 
     player1_num_cards = [len(player1)]
     player2_num_cards = [len(player2)]
@@ -36,15 +38,22 @@ def play():
         done_with_hand = False
         while not done_with_hand:
             if card1 > card2:
+                if verbose:
+                    print 'player 1 wins, gets:', table
                 done_with_hand = True
-                shuffle(table)
+                if shuffle_won_cards:
+                    shuffle(table)
                 player1 += table
             elif card1 < card2:
+                if verbose:
+                    print 'player 1 wins, gets:', table
                 done_with_hand = True
-                shuffle(table)
+                if shuffle_won_cards:
+                    shuffle(table)
                 player2 += table
             else:
-                # print 'WAR!'
+                if verbose:
+                    print 'WAR!'
                 if len(player1) < 4 or len(player2) < 4:
                     done = True
                     break
@@ -61,10 +70,12 @@ def play():
                 table.append(card1)
                 table.append(card2)
 
-        round_num += 1
-        #print 'after round', round_num
-        # print player1
-        # print player2
+        hand_num += 1
+
+        if verbose:
+            print 'after hand', hand_num
+            print 'player 1 has', len(player1), 'cards:', player1
+            print 'player 2 has', len(player2), 'cards:', player2
 
         player1_num_cards.append(len(player1))
         player2_num_cards.append(len(player2))
@@ -72,22 +83,24 @@ def play():
         if len(player1) is 0 or len(player2) is 0:
             done = True
 
-        if round_num > 10000:
-            print 'too long!'
+        if hand_num >= max_hands:
+            print 'reached maximum number of hands, starting over'
             done = True
 
-    return round_num
+    if plot_progress:
+        plt.plot(range(0, hand_num+1), player1_num_cards, label='player 1', lw=1, alpha=0.8)
+        plt.plot(range(0, hand_num+1), player2_num_cards, label='player 2', lw=1, alpha=0.8)
 
-    # plt.plot(range(0, round_num+1), player1_num_cards, label='player 1', lw=1, alpha=0.8)
-    # plt.plot(range(0, round_num+1), player2_num_cards, label='player 2', lw=1, alpha=0.8)
-    #
-    # plt.legend()
-    # plt.show()
+        plt.legend()
+        plt.show()
 
-num_rounds = 10000
+    return hand_num
+
+num_rounds = 1000
 counts = []
 for i in range(0, num_rounds):
-    print i
+    if i % 100 == 0:
+        print 'done with', i, 'rounds'
     counts.append(play())
 
 plt.hist(counts, bins='auto', normed=True)
