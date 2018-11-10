@@ -8,5 +8,15 @@ for i in range(0, num_rounds):
         print 'done with', i, 'rounds'
     counts.append(play())
 
-plt.hist(counts, bins='auto', normed=True)
+print
+print 'done!'
+print 'min number of hands to win:', min(counts)
+print 'max number of hands to win:', max(counts)
+
+plt.hist(counts, bins='auto')
+plt.xlabel('number of hands to win')
+plt.ylabel('number of outcomes')
+plt.xlim(left=0)
+plt.ylim(bottom=0)
+plt.tight_layout()
 plt.show()
